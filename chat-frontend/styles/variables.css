@@ -1,0 +1,9 @@
+/* CSS custom properties for colors, fonts, and themes */
+:root {
+  --bg-color: #f5f5f5;
+  --text-color: #333333;
+  --chat-bg: #ffffff;
+  --msg-bg: #e0e0e0;
+  --msg-user-bg: #cfe9ff;
+  --msg-text: #000000;
+}

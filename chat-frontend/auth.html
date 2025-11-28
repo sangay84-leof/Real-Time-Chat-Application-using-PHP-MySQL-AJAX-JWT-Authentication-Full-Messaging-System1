@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Chat Application</title>
+    <link rel="stylesheet" href="styles/variables.css" />
+    <link rel="stylesheet" href="styles/layout.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+      .auth-container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 2rem;
+        background: var(--bg-secondary, #fff);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .auth-container h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--text-primary, #333);
+      }
+
+      .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .form-group label {
+        font-weight: 500;
+        color: var(--text-secondary, #666);
+      }
+
+      .form-group input {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-color, #007bff);
+      }
+
+      .auth-button {
+        padding: 0.75rem;
+        background: var(--primary-color, #007bff);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .auth-button:hover {
+        background: var(--primary-dark, #0056b3);
+      }
+
+      .auth-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .toggle-auth {
+        text-align: center;
+        margin-top: 1rem;
+        color: var(--text-secondary, #666);
+      }
+
+      .toggle-auth a {
+        color: var(--primary-color, #007bff);
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .toggle-auth a:hover {
+        text-decoration: underline;
+      }
+
+      .error-message {
+        padding: 0.75rem;
+        background: #fee;
+        color: #c33;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-container">
+      <h1 id="auth-title">Login</h1>
+
+      <div id="error-message" class="error-message"></div>
+
+      <form id="auth-form" class="auth-form">
+        <div class="form-group" id="email-group" style="display: none">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email" />
+        </div>
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter your username"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="auth-button" id="auth-submit">
+          Login
+        </button>
+      </form>
+
+      <div class="toggle-auth">
+        <span id="toggle-text">Don't have an account?</span>
+        <a href="#" id="toggle-link">Register</a>
+      </div>
+    </div>
+
+    <script type="module">
+      import { API } from "./assets/js/api.js";
+
+      let isLogin = true;
+
+      const form = document.getElementById("auth-form");
+      const emailGroup = document.getElementById("email-group");
+      const emailInput = document.getElementById("email");
+      const usernameInput = document.getElementById("username");
+      const passwordInput = document.getElementById("password");
+      const submitButton = document.getElementById("auth-submit");
+      const authTitle = document.getElementById("auth-title");
+      const toggleText = document.getElementById("toggle-text");
+      const toggleLink = document.getElementById("toggle-link");
+      const errorMessage = document.getElementById("error-message");
+
+      // Toggle between login and register
+      toggleLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        isLogin = !isLogin;
+
+        if (isLogin) {
+          authTitle.textContent = "Login";
+          submitButton.textContent = "Login";
+          toggleText.textContent = "Don't have an account?";
+          toggleLink.textContent = "Register";
+          emailGroup.style.display = "none";
+          emailInput.required = false;
+        } else {
+          authTitle.textContent = "Register";
+          submitButton.textContent = "Register";
+          toggleText.textContent = "Already have an account?";
+          toggleLink.textContent = "Login";
+          emailGroup.style.display = "flex";
+          emailInput.required = true;
+        }
+
+        hideError();
+      });
+
+      // Show error
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.add("show");
+      }
+
+      // Hide error
+      function hideError() {
+        errorMessage.classList.remove("show");
+      }
+
+      // Handle form submission
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        hideError();
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const email = emailInput.value.trim();
+
+        submitButton.disabled = true;
+        submitButton.textContent = isLogin ? "Logging in..." : "Registering...";
+
+        try {
+          if (isLogin) {
+            // Start login request
+            await API.login(username, password);
+
+            // Redirect to chat
+            window.location.href = "index.html";
+          } else {
+            if (!email) {
+              throw new Error("Email is required");
+            }
+            await API.register(username, email, password);
+            // Redirect to chat
+            window.location.href = "index.html";
+          }
+        } catch (error) {
+          showError(error.message || "Authentication failed");
+          submitButton.disabled = false;
+          submitButton.textContent = isLogin ? "Login" : "Register";
+        }
+      });
+    </script>
+  </body>
+</html>

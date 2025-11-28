@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="styles/variables.css" />
+    <link rel="stylesheet" href="styles/layout.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/chat.css" />
+  </head>
+  <body>
+    <!-- Header Component -->
+    <header class="chat-header">
+      <h1>Chat Application</h1>
+      <button
+        id="logout-button"
+        class="logout-btn"
+        style="
+          position: absolute;
+          right: 20px;
+          top: 20px;
+          padding: 8px 16px;
+          background: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+        "
+      >
+        Logout
+      </button>
+    </header>
+
+    <!-- Chat Box Component -->
+    <div id="chat-box" class="chat-box"></div>
+
+    <!-- Footer Component -->
+    <footer class="chat-footer">
+      <input
+        type="file"
+        id="file-input"
+        accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
+        style="display: none"
+      />
+      <button
+        id="attachment-button"
+        class="attachment-btn"
+        aria-label="Attach file"
+      >
+        📎
+      </button>
+      <button id="mic-button" class="mic-btn" aria-label="Record audio">
+        🎤
+      </button>
+      <input type="text" id="message-input" placeholder="Type a message..." />
+      <button id="send-button">Send</button>
+    </footer>
+
+    <script type="module" src="assets/js/app.js"></script>
+  </body>
+</html>

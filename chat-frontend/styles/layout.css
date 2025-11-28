@@ -1,0 +1,19 @@
+/* Layout utilities: grid and flex helpers */
+
+/* Simple flex column */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Simple flex row */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Grid container */
+.grid {
+  display: grid;
+  gap: 1rem;
+}
